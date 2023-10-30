@@ -14,5 +14,6 @@ export default function AboutUs() {
         using the information on the Contact Us page.
       </p>
     </div>
+    
   );
 }

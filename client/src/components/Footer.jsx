@@ -97,6 +97,7 @@ function Footer() {
         &#169; 2023 All rights reserved.
       </small>
     </footer>
+    
   );
 }
 
