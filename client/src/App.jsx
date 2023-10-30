@@ -1,12 +1,13 @@
-import "./App.css";
+// src/App.jsx
+import React from "react";
+import AuthComponent from "./AuthComponent";
+import "./App.css"
 
 function App() {
   return (
-    <>
-      <h1 className="text-3xl text-blue-800 font-bold underline">
-        hello world!!!
-      </h1>
-    </>
+    <div className="container">
+      <AuthComponent />
+    </div>
   );
 }
 
