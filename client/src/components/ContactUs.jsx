@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import './ContactUs.css'; // Import a CSS file for styling (create this file if it doesn't exist).
+import React, { useState } from "react";
 
 function ContactUs() {
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    message: '',
+    username: "",
+    email: "",
+    message: "",
   });
 
   const handleChange = (e) => {
@@ -26,7 +25,10 @@ function ContactUs() {
     <div className="contact-us-container">
       <div className="contact-info">
         <h2>Contact Us</h2>
-        <p>If you have any inquiries or feedback, please don't hesitate to reach out to us.</p>
+        <p>
+          If you have any inquiries or feedback, please don't hesitate to reach
+          out to us.
+        </p>
         <p>You can contact us through the following methods:</p>
         <ul>
           <li>Email: contact@arnold.aswani@student.moringaschool.com</li>
@@ -73,7 +75,6 @@ function ContactUs() {
         </form>
       </div>
     </div>
-    
   );
 }
 

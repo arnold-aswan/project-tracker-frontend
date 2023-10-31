@@ -48,9 +48,9 @@ function Navbar() {
               <li className="cursor-pointer hover:bg-blue-500 hover:text-white rounded-md py-2 px-3">
                 <NavLink to="/cohorts">Projects/Cohorts</NavLink>
               </li>
-              {/* <li className="cursor-pointer hover:bg-blue-500 hover:text-white rounded-md py-2 px-3">
-            <NavLink to="/contact">Contact Us</NavLink>
-          </li> */}
+              <li className="cursor-pointer hover:bg-blue-500 hover:text-white rounded-md py-2 px-3">
+                <NavLink to="/contact">Contact Us</NavLink>
+              </li>
               <li className="cursor-pointer hover:bg-blue-500 hover:text-white rounded-md py-2 px-3">
                 <NavLink to="/about">About Us</NavLink>
               </li>
