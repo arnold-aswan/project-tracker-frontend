@@ -16,8 +16,8 @@ function AuthComponent() {
     if (authenticateUser(email, password)) {
       alert("Login successful! Redirecting to the main page...");
 
-      // Redirect to the home page 
-      window.location.href = '/';
+      // Redirect to the home page
+      window.location.href = "/";
     } else {
       alert("Invalid email or password. Please try again.");
     }
@@ -49,7 +49,7 @@ function AuthComponent() {
         },
         body: JSON.stringify({ email, password }),
       });
-  
+
       if (response.ok) {
         // Authentication successful
         return true;
@@ -73,7 +73,7 @@ function AuthComponent() {
         },
         body: JSON.stringify({ username, email, password }),
       });
-  
+
       if (response.ok) {
         // Registration successful
         return true;
@@ -88,17 +88,19 @@ function AuthComponent() {
   }
 
   return (
-    <div className="min-h-screen w-screen bg-gray-300 flex justify-center items-center md:p-4">
-      <div className="bg-gray-700 sm:w-2/3 md:w-2/3 lg:w-2/3 xl:w-1/2 p-4 rounded-lg">
+    <div className=" max-w-screen bg-gray-300 flex justify-center items-center md:p-4 rounded-md">
+      <div className="bg-gray-700 sm:w-2/3 md:w-2/3 lg:w-2/5 xl:w-1/3 p-4 rounded-lg">
         <h1 className="text-2xl font-semibold text-blue-600 flex justify-center align-center">
-          {isLoginForm ? 'Login' : 'Sign Up'}
+          {isLoginForm ? "Login" : "Sign Up"}
         </h1>
         {isLoginForm ? (
           <form className="text-left" onSubmit={handleSubmit}>
             {/* Input fields and labels for login */}
             {/* You can use JSX to avoid selecting elements by ID */}
             <div className="input-container">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email" className="text-white">
+                Email
+              </label>
               <input
                 type="text"
                 id="email"
@@ -108,7 +110,9 @@ function AuthComponent() {
               />
             </div>
             <div className="input-container">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password" className="text-white">
+                Password
+              </label>
               <input
                 type="password"
                 id="password"
@@ -118,15 +122,17 @@ function AuthComponent() {
               />
             </div>
             <div className="input-container">
-            <label htmlFor="role">Role</label>
-            <select
-              id="role"
-              required
-              className="w-full p-2 border rounded border-blue-200 mb-2"
-            >
-              <option value="student">Student</option>
-              <option value="admin">Admin</option>
-            </select>
+              <label htmlFor="role" className="text-white">
+                Role
+              </label>
+              <select
+                id="role"
+                required
+                className="w-full p-2 border rounded border-blue-200 mb-2"
+              >
+                <option value="student">Student</option>
+                <option value="admin">Admin</option>
+              </select>
             </div>
 
             <button
@@ -140,7 +146,9 @@ function AuthComponent() {
           <form className="text-left" onSubmit={handleRegistration}>
             {/* Input fields and labels for registration */}
             <div className="input-container">
-              <label htmlFor="firstName">First Name</label>
+              <label htmlFor="firstName" className="text-white">
+                First Name
+              </label>
               <input
                 type="text"
                 id="firstName"
@@ -150,17 +158,21 @@ function AuthComponent() {
               />
             </div>
             <div className="input-container">
-            <label htmlFor="lastName">Last Name</label>
-            <input
-              type="text"
-              id="lastName"
-              placeholder="Last Name"
-              required
-              className="w-full p-2 border rounded border-blue-200 mb-2"
-            />
+              <label htmlFor="lastName" className="text-white">
+                Last Name
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                placeholder="Last Name"
+                required
+                className="w-full p-2 border rounded border-blue-200 mb-2"
+              />
             </div>
             <div className="input-container">
-              <label htmlFor="username">Username</label>
+              <label htmlFor="username" className="text-white">
+                Username
+              </label>
               <input
                 type="text"
                 id="username"
@@ -170,7 +182,9 @@ function AuthComponent() {
               />
             </div>
             <div className="input-container">
-              <label htmlFor="signup-email">Email</label>
+              <label htmlFor="signup-email" className="text-white">
+                Email
+              </label>
               <input
                 type="text"
                 id="signup-email"
@@ -180,18 +194,22 @@ function AuthComponent() {
               />
             </div>
             <div className="input-container">
-            <label htmlFor="role">Role</label>
-            <select
-              id="role"
-              required
-              className="w-full p-2 border rounded border-blue-200 mb-2"
-            >
-              <option value="student">Student</option>
-              <option value="admin">Admin</option>
-            </select>
+              <label htmlFor="role" className="text-white">
+                Role
+              </label>
+              <select
+                id="role"
+                required
+                className="w-full p-2 border rounded border-blue-200 mb-2"
+              >
+                <option value="student">Student</option>
+                <option value="admin">Admin</option>
+              </select>
             </div>
             <div className="input-container">
-              <label htmlFor="signup-password">Password</label>
+              <label htmlFor="signup-password" className="text-white">
+                Password
+              </label>
               <input
                 type="password"
                 id="signup-password"
@@ -209,12 +227,11 @@ function AuthComponent() {
           </form>
         )}
         <p>
-          {isLoginForm ? "Don't have an account? " : "Already have an account? "}
-          <span
-            className="text-blue-600 cursor-pointer"
-            onClick={toggleForm}
-          >
-            Sign {isLoginForm ? 'up' : 'in'}
+          {isLoginForm
+            ? "Don't have an account? "
+            : "Already have an account? "}
+          <span className="text-blue-600 cursor-pointer" onClick={toggleForm}>
+            Sign {isLoginForm ? "up" : "in"}
           </span>
         </p>
       </div>
