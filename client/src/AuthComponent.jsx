@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 function AuthComponent() {
   const [isLoginForm, setIsLoginForm] = useState(true);
@@ -9,13 +9,16 @@ function AuthComponent() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email = event.target.email.value;
+    const password = event.target.password.value;
 
     if (authenticateUser(email, password)) {
       alert("Login successful! Redirecting to the main page...");
+
+      // Redirect to the home page 
+      window.location.href = '/';
     } else {
-      alert("Invalid email/username or password. Please try again.");
+      alert("Invalid email or password. Please try again.");
     }
   };
 
@@ -34,18 +37,58 @@ function AuthComponent() {
     }
   };
 
-  function authenticateUser(email, password) {
-    return email === "user@example.com" && password === "password";
+  async function authenticateUser(email, password) {
+    try {
+      // Make an API request to your server to authenticate the user
+      const response = await fetch("/api/authenticate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      if (response.ok) {
+        // Authentication successful
+        return true;
+      } else {
+        // Authentication failed
+        return false;
+      }
+    } catch (error) {
+      console.error("Authentication error:", error);
+      return false;
+    }
   }
 
-  function registerUser(username, email, password) {
-    return true; // Simulated success
+  async function registerUser(username, email, password) {
+    try {
+      // Make an API request to your server to register the user
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, email, password }),
+      });
+  
+      if (response.ok) {
+        // Registration successful
+        return true;
+      } else {
+        // Registration failed
+        return false;
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      return false;
+    }
   }
-
+  
   return (
     <div className="min-h-screen w-screen bg-gray-300 flex justify-center items-center md:p-4">
       <div className="bg-gray-700 sm:w-2/3 md:w-2/3 lg:w-2/3 xl:w-1/2 p-4 rounded-lg">
-        <h1 className="text-2xl font-semibold text-blue-600">
+        <h1 className="text-2xl font-semibold text-blue-600 flex justify-center align-center">
           {isLoginForm ? 'Login' : 'Sign Up'}
         </h1>
         {isLoginForm ? (
