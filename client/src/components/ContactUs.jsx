@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import './ContactUs.css'; // Import a CSS file for styling (create this file if it doesn't exist).
-
+import './ContactUs.css'; 
 function ContactUs() {
   const [formData, setFormData] = useState({
     username: '',
@@ -18,7 +17,7 @@ function ContactUs() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // You can handle form submission logic here, e.g., sending data to a server.
+   
     console.log(formData);
   };
 
