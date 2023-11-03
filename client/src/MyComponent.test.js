@@ -45,3 +45,14 @@ describe('ContactUs Component', () => {
       // Test that the component renders without errors
       expect(getByText('Contact Us')).toBeInTheDocument();
     });
+    it('handles form input and submission', () => {
+        const { getByText, getByLabelText, getByRole } = render(<ContactUs />);
+        const nameInput = getByLabelText('Name');
+        const emailInput = getByLabelText('Email');
+        const messageInput = getByLabelText('Message');
+        const submitButton = getByRole('button', { name: 'Send Message' });
+    
+        // Simulate user input
+        fireEvent.change(nameInput, { target: { value: 'John Doe' } });
+        fireEvent.change(emailInput, { target: { value: 'john.doe@example.com' } });
+        fireEvent.change(messageInput, { target: { value: 'Hello, this is a test message.' } });
