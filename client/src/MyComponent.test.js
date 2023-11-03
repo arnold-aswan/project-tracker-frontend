@@ -56,3 +56,14 @@ describe('ContactUs Component', () => {
         fireEvent.change(nameInput, { target: { value: 'John Doe' } });
         fireEvent.change(emailInput, { target: { value: 'john.doe@example.com' } });
         fireEvent.change(messageInput, { target: { value: 'Hello, this is a test message.' } });
+           // Ensure the input fields have received the user's input
+    expect(nameInput.value).toBe('John Doe');
+    expect(emailInput.value).toBe('john.doe@example.com');
+    expect(messageInput.value).toBe('Hello, this is a test message.');
+
+    // Submit the form
+    fireEvent.click(submitButton);
+
+    // You can add more specific tests related to form submission here
+  });
+});
