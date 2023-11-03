@@ -18,3 +18,11 @@ it('displays mission and vision content', () => {
     expect(getByText('We are on a mission to revolutionize the way teams manage their projects.')).toBeInTheDocument();
     expect(getByText('We envision a world where every project, no matter the size or complexity, can be efficiently managed and completed on time.')).toBeInTheDocument();
   });
+
+  it('displays "What Sets Us Apart" section content', () => {
+    const { getByText } = render(<AboutUs />);
+
+    // Test that the "What Sets Us Apart" section and its content is present
+    expect(getByText('What Sets Us Apart')).toBeInTheDocument();
+    expect(getByText('Cutting-Edge Technology')).toBeInTheDocument();
+    expect(getByText('Unparalleled Support')).toBeInTheDocument();
