@@ -26,3 +26,8 @@ it('displays mission and vision content', () => {
     expect(getByText('What Sets Us Apart')).toBeInTheDocument();
     expect(getByText('Cutting-Edge Technology')).toBeInTheDocument();
     expect(getByText('Unparalleled Support')).toBeInTheDocument();
+     // You can add more specific content checks here
+     expect(getByText('Our platform is built with a user-centric approach, ensuring an intuitive and user-friendly interface.')).toBeInTheDocument();
+     expect(getByText('Our dedicated team is always ready to assist you with any questions or concerns you may have.')).toBeInTheDocument();
+   });
+ });
