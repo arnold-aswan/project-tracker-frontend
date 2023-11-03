@@ -31,3 +31,10 @@ it('displays mission and vision content', () => {
      expect(getByText('Our dedicated team is always ready to assist you with any questions or concerns you may have.')).toBeInTheDocument();
    });
  });
+
+
+
+
+ import React from 'react';
+import { render, fireEvent } from '@testing-library/react';
+import ContactUs from './ContactUs';
