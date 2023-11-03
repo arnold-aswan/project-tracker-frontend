@@ -38,3 +38,10 @@ it('displays mission and vision content', () => {
  import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import ContactUs from './ContactUs';
+describe('ContactUs Component', () => {
+    it('renders the component', () => {
+      const { getByText } = render(<ContactUs />);
+  
+      // Test that the component renders without errors
+      expect(getByText('Contact Us')).toBeInTheDocument();
+    });
