@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { RxHamburgerMenu, RxCrossCircled } from "react-icons/rx";
 import { useState } from "react";
+import fox from "../assets/paw.png";
 
 function Navbar() {
   const [sideBar, setSideBar] = useState(false);
@@ -14,7 +15,8 @@ function Navbar() {
           to="/"
           className="lg:text-3xl text-2xl font-semibold cursor-pointer"
         >
-          Home
+          {/* Home */}
+          <img src={fox} alt="" className="w-[2rem]" />
         </NavLink>
 
         <div className="">
