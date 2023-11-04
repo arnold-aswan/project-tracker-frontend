@@ -8,7 +8,7 @@ export const AppProvider = ({ children }) => {
   const [cohort, setCohort] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
   const [originalProjects, setOriginalProjects] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(true);
 
   const getProjects = async () => {
     try {

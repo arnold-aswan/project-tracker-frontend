@@ -44,7 +44,7 @@ function Footer() {
               About
             </NavLink>
             <NavLink
-              to={"/contacts"}
+              to={"/contact"}
               className="hover:bg-blue-500 hover:text-white text-black mx-3 p-2  rounded-lg"
             >
               Contacts
@@ -97,7 +97,6 @@ function Footer() {
         &#169; 2023 All rights reserved.
       </small>
     </footer>
-    
   );
 }
 

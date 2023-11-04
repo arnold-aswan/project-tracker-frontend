@@ -24,8 +24,8 @@ function App() {
         <Route path="/cohorts" element={<Cohorts />} />
         <Route path="/add-cohort" element={<AddCohort />} />
         <Route path="/add-project" element={<AddProject />} />
-        <Route path="/aboutus" element={<AboutUs />} />
-        <Route path="/contactus" element={<ContactUs />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route path="/contact" element={<ContactUs />} />
         <Route path="/login/*" element={<AuthComponent />} />
       </Routes>
       <Footer />
