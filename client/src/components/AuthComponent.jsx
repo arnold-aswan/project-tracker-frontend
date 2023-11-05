@@ -1,102 +1,89 @@
-import React, { useState } from "react";
+import { React, useContext, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import AppContext from "../context/Appcontext";
 
 function AuthComponent() {
+  const { baseUrl, setIsLoggedIn, toast } = useContext(AppContext);
   const [isLoginForm, setIsLoginForm] = useState(true);
+  const navigate = useNavigate();
 
   const toggleForm = () => {
     setIsLoginForm(!isLoginForm);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const email = event.target.email.value;
-    const password = event.target.password.value;
-    const role = document.getElementById("role").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const role = document.getElementById("l-role").value;
 
-    if (authenticateUser(email, password)) {
-      alert("Login successful! Redirecting to the main page...");
-
-      // Redirect to the home page
-      window.location.href = "/";
-    } else {
-      alert("Invalid email or password. Please try again.");
+    try {
+      const response = await axios.post(`${baseUrl}/login`, {
+        email,
+        password,
+        role,
+      });
+      console.log(email, password, role);
+      console.log(response);
+      localStorage.setItem("accessToken", response.data.access_token);
+      localStorage.setItem("refreshToken", response.data.refresh_token);
+      localStorage.setItem("role", response.data.role);
+      localStorage.setItem("user_id", response.data.user_id);
+      response.data.access_token ? setIsLoggedIn(true) : setIsLoggedIn(false);
+      navigate("/");
+    } catch (error) {
+      // console.log(email, password, role);
+      console.error("Error logging in:", error);
+      if (error) {
+        toast.error(error.response.data.message, {
+          autoclose: 3000,
+          theme: "colored",
+        });
+      }
     }
   };
 
   const handleRegistration = (event) => {
     event.preventDefault();
-    const firstName = document.getElementById("firstName").value;
-    const lastName = document.getElementById("lastName").value;
+    const first_name = document.getElementById("firstName").value;
     const username = document.getElementById("username").value;
     const email = document.getElementById("signup-email").value;
     const password = document.getElementById("signup-password").value;
+    const last_name = document.getElementById("lastName").value;
+    const role = document.getElementById("role").value;
 
-    if (registerUser(username, email, password)) {
-      alert("Account registered successfully. You can now log in.");
+    try {
+      const response = axios.post(`${baseUrl}/signUp`, {
+        first_name,
+        last_name,
+        username,
+        email,
+        password,
+        role,
+      });
+      console.log(response);
+      // console.log(first_name, last_name, username, email, password, role);
       setIsLoginForm(true);
-    } else {
-      alert("Registration failed. Please try again.");
+    } catch (error) {
+      console.error("Error registering:", error);
+      if (error) {
+        toast.error(error.response.data.message, {
+          autoclose: 3000,
+          theme: "colored",
+        });
+      }
     }
   };
 
-  async function authenticateUser(email, password) {
-    try {
-      // Make an API request to your server to authenticate the user
-      const response = await fetch("/api/authenticate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        // Authentication successful
-        return true;
-      } else {
-        // Authentication failed
-        return false;
-      }
-    } catch (error) {
-      console.error("Authentication error:", error);
-      return false;
-    }
-  }
-
-  async function registerUser(username, email, password) {
-    try {
-      // Make an API request to your server to register the user
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, email, password }),
-      });
-
-      if (response.ok) {
-        // Registration successful
-        return true;
-      } else {
-        // Registration failed
-        return false;
-      }
-    } catch (error) {
-      console.error("Registration error:", error);
-      return false;
-    }
-  }
-
   return (
-    <div className=" max-w-screen bg-gray-300 flex justify-center items-center md:p-4 rounded-md">
-      <div className="bg-gray-700 sm:w-2/3 md:w-2/3 lg:w-2/5 xl:w-1/3 p-4 rounded-lg">
-        <h1 className="text-2xl font-semibold text-blue-600 flex justify-center align-center">
+    <div className="min-h-screen  bg-slate-100 flex justify-center items-center md:p-4 rounded-md">
+      <div className="bg-gray-700 sm:w-2/3 md:w-[25rem] lg:w-[27rem]  p-4 rounded-lg">
+        <h1 className="text-2xl font-semibold text-blue-600">
           {isLoginForm ? "Login" : "Sign Up"}
         </h1>
         {isLoginForm ? (
           <form className="text-left" onSubmit={handleSubmit}>
-            {/* Input fields and labels for login */}
-            {/* You can use JSX to avoid selecting elements by ID */}
             <div className="input-container">
               <label htmlFor="email" className="text-white">
                 Email
@@ -121,20 +108,15 @@ function AuthComponent() {
                 className="w-full p-2 border rounded border-blue-200 mb-2"
               />
             </div>
-            <div className="input-container">
+            <div className="input-container mt-3 flex flex-col">
               <label htmlFor="role" className="text-white">
                 Role
               </label>
-              <select
-                id="role"
-                required
-                className="w-full p-2 border rounded border-blue-200 mb-2"
-              >
+              <select className="p-2 rounded-md w-full" id="l-role">
                 <option value="student">Student</option>
                 <option value="admin">Admin</option>
               </select>
             </div>
-
             <button
               className="bg-blue-600 text-white rounded-md py-2 px-4 text-lg font-semibold mt-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
               type="submit"
@@ -194,19 +176,6 @@ function AuthComponent() {
               />
             </div>
             <div className="input-container">
-              <label htmlFor="role" className="text-white">
-                Role
-              </label>
-              <select
-                id="role"
-                required
-                className="w-full p-2 border rounded border-blue-200 mb-2"
-              >
-                <option value="student">Student</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-            <div className="input-container">
               <label htmlFor="signup-password" className="text-white">
                 Password
               </label>
@@ -218,6 +187,17 @@ function AuthComponent() {
                 className="w-full p-2 border rounded border-blue-200 mb-2"
               />
             </div>
+            <div className="input-container mt-3 flex flex-col">
+              <label htmlFor="role" className="text-white">
+                Role
+              </label>
+              <select className="p-2 rounded-md" id="role">
+                <option value="student" defaultValue={"student"}>
+                  Student
+                </option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
             <button
               className="bg-blue-600 text-white rounded-md py-2 px-4 text-lg font-semibold mt-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
               type="submit"
@@ -226,7 +206,7 @@ function AuthComponent() {
             </button>
           </form>
         )}
-        <p>
+        <p className="text-white">
           {isLoginForm
             ? "Don't have an account? "
             : "Already have an account? "}
@@ -240,89 +220,3 @@ function AuthComponent() {
 }
 
 export default AuthComponent;
-
-// import React, { useState } from 'react';
-
-// function AuthComponent() {
-//   const [isLoginForm, setIsLoginForm] = useState(true);
-
-//   const toggleForm = () => {
-//     setIsLoginForm(!isLoginForm);
-//   };
-
-//   const handleSubmit = (event) => {
-//     event.preventDefault();
-//     const email = document.getElementById("email").value;
-//     const password = document.getElementById("password").value;
-
-//     // Simulated authentication - replace with your actual authentication logic
-//     if (authenticateUser(email, password)) {
-//       alert("Login successful! Redirecting to the main page...");
-//       // You can redirect the user to the main page using React Router or other routing methods
-//     } else {
-//       alert("Invalid email/username or password. Please try again.");
-//     }
-//   };
-
-//   const handleRegistration = (event) => {
-//     event.preventDefault();
-//     const firstName = document.getElementById("First Name").value;
-//     const username = document.getElementById("username").value;
-//     const email = document.getElementById("signup-email").value;
-//     const password = document.getElementById("signup-password").value;
-
-//     // Simulated user registration - replace with your actual registration logic
-//     if (registerUser(username, email, password)) {
-//       alert("Account registered successfully. You can now log in.");
-//       setIsLoginForm(true); // Automatically switch to the login form
-//     } else {
-//       alert("Registration failed. Please try again.");
-//     }
-//   };
-
-//   // Simulated user authentication function (replace with actual logic)
-//   function authenticateUser(email, password) {
-//     // Replace with your actual authentication logic, e.g., make an AJAX request to a server
-//     // Return true if authentication is successful, false otherwise
-//     return email === "user@example.com" && password === "password";
-//   }
-
-//   // Simulated user registration function (replace with actual logic)
-//   function registerUser(username, email, password) {
-//     // Replace with your actual registration logic, e.g., make an AJAX request to a server
-//     // Return true if registration is successful, false otherwise
-//     return true; // Simulated success
-//   }
-
-//   return (
-//     <div className="bg-blue-100 min-h-screen flex justify-center items-center">
-//       <div className="bg-white rounded-lg shadow-md p-8 w-96 text-center">
-//         <span className="text-4xl font-bold text-blue-600"></span>
-//         <h1 className="text-2xl font-semibold text-blue-600">{isLoginForm ? 'Login' : 'Sign Up'}</h1>
-//         {isLoginForm ? (
-//           <form className="text-left" onSubmit={handleSubmit}>
-//           <input type="text" id="email" placeholder="Email" required />
-//           <input type="password" id="password" placeholder="Password" required />
-
-//             <button className="bg-blue-600 text-white rounded-md py-2 px-4 text-lg font-semibold mt-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600" type="submit">Login</button>
-//           </form>
-//         ) : (
-//           <form className="text-left" onSubmit={handleRegistration}>
-//           <input type="text" id="firstName" placeholder="First Name" required />
-//           <input type="text" id="lastName" placeholder="Last Name" required />
-//           <input type="text" id="username" placeholder="Username" required />
-//           <input type="text" id="signup-email" placeholder="Email" required />
-//           <input type="password" id="signup-password" placeholder="Password" required />
-//           <button className="bg-blue-600 text-white rounded-md py-2 px-4 text-lg font-semibold mt-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600" type="submit">Sign Up</button>
-//           </form>
-//         )}
-//         <p>
-//           {isLoginForm ? 'Don’t have an account? ' : 'Already have an account? '}
-//           <span className="text-blue-600 cursor-pointer" onClick={toggleForm}>Sign {isLoginForm ? 'up' : 'in'}</span>
-//         </p>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default AuthComponent;
