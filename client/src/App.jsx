@@ -1,7 +1,5 @@
-// src/App.jsx
-import React from "react";
+import "./App.css";
 import { Route, Routes, Outlet } from "react-router-dom";
-import AuthComponent from "./components/AuthComponent";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import AddCohort from "./components/AddCohort";
@@ -11,25 +9,33 @@ import Contact from "./components/ContactUs";
 import Footer from "./components/Footer";
 import AboutUs from "./components/AboutUs";
 import ContactUs from "./components/ContactUs";
-import "./App.css";
+import AuthComponent from "./components/AuthComponent";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
-    <div className="container">
+    <main className="">
       <Navbar />
       <Outlet />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/cohorts" element={<Cohorts />} />
-        <Route path="/add-cohort" element={<AddCohort />} />
+        <Route
+          path="/add-cohort"
+          element={<ProtectedRoute element={<AddCohort />} role={"admin"} />}
+        />
+
+        {/* <Route path="/add-cohort" element={<AddCohort />} /> */}
         <Route path="/add-project" element={<AddProject />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/login/*" element={<AuthComponent />} />
       </Routes>
       <Footer />
-    </div>
+      <ToastContainer />
+    </main>
   );
 }
 
