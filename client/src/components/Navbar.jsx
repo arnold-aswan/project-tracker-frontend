@@ -1,22 +1,48 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { RxHamburgerMenu, RxCrossCircled } from "react-icons/rx";
-import { useState } from "react";
-import fox from "../assets/paw.png";
+import { useState, useContext } from "react";
+import project from "../assets/project-management.png";
+import AppContext from "../context/Appcontext";
 
 function Navbar() {
+  const { isLoggedIn, setIsLoggedIn, toast } = useContext(AppContext);
   const [sideBar, setSideBar] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("role");
+    localStorage.removeItem("user_id");
+    setIsLoggedIn(false);
+    navigate("/");
+  };
+
+  const handleClick = (e, path, allowedRoles) => {
+    if (!isLoggedIn) {
+      e.preventDefault();
+      navigate("/login");
+    } else {
+      const userRole = localStorage.getItem("role");
+      if (allowedRoles.includes(userRole)) {
+        navigate(path);
+      } else {
+        e.preventDefault();
+        toast.info("You don't have the required permissions for this action.", {
+          autoclose: 3000,
+          theme: "colored",
+        });
+      }
+    }
+  };
   return (
     <>
       <nav
         className="border-2 border-slate-100 py-3 px-4 
       rounded-md shadow-lg flex items-center justify-between mb-10"
       >
-        <NavLink
-          to="/"
-          className="lg:text-3xl text-2xl font-semibold cursor-pointer"
-        >
-          {/* Home */}
-          <img src={fox} alt="" className="w-[2rem]" />
+        <NavLink to="/" className="cursor-pointer">
+          <img src={project} alt="" className="w-[2rem]" />
         </NavLink>
 
         <div className="">
@@ -29,7 +55,7 @@ function Navbar() {
               className={
                 sideBar
                   ? `lg:flex lg:gap-5 flex flex-col h-screen w-[15rem] fixed top-0 right-0 z-10 bg-white shadow-lg px-5 pt-[4rem]`
-                  : "hidden lg:flex lg:gap-4"
+                  : "hidden lg:flex lg:gap-3"
               }
             >
               <li>
@@ -38,23 +64,53 @@ function Navbar() {
                   onClick={() => setSideBar(false)}
                 />
               </li>
-              <li className="cursor-pointer hover:bg-blue-500 hover:text-white rounded-md py-2 px-3">
-                <NavLink to="/login">Login</NavLink>
+              {isLoggedIn ? (
+                <li className="cursor-pointer md:text-[.9rem] hover:bg-red-500 hover:text-white rounded-md p-2 ">
+                  <button onClick={handleLogout}>Logout</button>
+                </li>
+              ) : (
+                <li className="nav-links">
+                  <NavLink to="/login">
+                    {localStorage.getItem("accessToken") ? "Logout" : "Login"}
+                    {/* Login */}
+                  </NavLink>
+                </li>
+              )}
+              <li className="nav-links">
+                <NavLink
+                  to="/add-project"
+                  onClick={(e) =>
+                    handleClick(e, "/add-project", ["admin", "student"])
+                  }
+                >
+                  Add Project
+                </NavLink>
               </li>
-              <li className="cursor-pointer hover:bg-blue-500 hover:text-white rounded-md py-2 px-3">
-                <NavLink to="/add-project">Add Project</NavLink>
+              {localStorage.getItem("role") === "admin" && (
+                <li className="nav-links">
+                  <NavLink
+                    to="/add-cohort"
+                    onClick={(e) => handleClick(e, "/add-cohort", "admin")}
+                  >
+                    Add Cohorts
+                  </NavLink>
+                </li>
+              )}
+              <li className="nav-links">
+                <NavLink
+                  to="/cohorts"
+                  onClick={(e) =>
+                    handleClick(e, "/cohorts", ["admin", "student"])
+                  }
+                >
+                  Projects/Cohorts
+                </NavLink>
               </li>
-              <li className="cursor-pointer hover:bg-blue-500 hover:text-white rounded-md py-2 px-3">
-                <NavLink to="/add-cohort">Add Cohorts</NavLink>
-              </li>
-              <li className="cursor-pointer hover:bg-blue-500 hover:text-white rounded-md py-2 px-3">
-                <NavLink to="/cohorts">Projects/Cohorts</NavLink>
-              </li>
-              <li className="cursor-pointer hover:bg-blue-500 hover:text-white rounded-md py-2 px-3">
-                <NavLink to="/contact">Contact Us</NavLink>
-              </li>
-              <li className="cursor-pointer hover:bg-blue-500 hover:text-white rounded-md py-2 px-3">
+              <li className="nav-links">
                 <NavLink to="/about">About Us</NavLink>
+              </li>
+              <li className="nav-links">
+                <NavLink to="/contact">Contact Us</NavLink>
               </li>
             </ul>
           </div>

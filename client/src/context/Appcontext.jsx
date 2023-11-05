@@ -1,32 +1,76 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AppContext = createContext({});
 
 export const AppProvider = ({ children }) => {
   const [projects, setProjects] = useState([]);
   const [cohort, setCohort] = useState([]);
+  const [students, setStudents] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
   const [originalProjects, setOriginalProjects] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [loading, setLoading] = useState(null);
+  const baseUrl = "http://localhost:5555";
+  // const [isAdmin, setIsAdmin] = useState(null);
+  // "https://project-tracker-tvyu.onrender.com";
+
+  useEffect(() => {
+    setLoading(true);
+    if (projects) {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleDelete = async (id) => {
+    console.log(id);
+    try {
+      const response = await axios.delete(`${baseUrl}/project/${id}`);
+      console.log("succesfully deleted item", response.data);
+      toast.success("Project deleted succesfully", {
+        autoClose: 3000,
+        theme: "colored",
+      });
+      setProjects((prevProjects) =>
+        prevProjects.filter((project) => project.id !== id)
+      );
+    } catch (error) {
+      console.log("Error deleting item", error);
+    }
+  };
+
+  const getStudents = async () => {
+    try {
+      const response = await axios
+        .get(`${baseUrl}/students`)
+        .then((response) => {
+          console.log(response.data);
+          setStudents(response.data);
+        });
+    } catch (error) {
+      console.log(error, "something went wrong");
+    }
+  };
 
   const getProjects = async () => {
     try {
       const response = await axios
-        .get("http://localhost:5555/projects")
+        .get(`${baseUrl}/projects`)
         .then((response) => {
           console.log(response.data);
           setProjects(response.data);
         });
     } catch (error) {
-      console.log(error);
+      console.log(error, "something went wrong");
     }
   };
 
   const getCohort = async () => {
     try {
       const response = await axios
-        .get("http://localhost:5555/classes")
+        .get(`${baseUrl}/classes`)
         .then((response) => {
           console.log(response.data);
           setCohort(response.data);
@@ -39,6 +83,7 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     getProjects();
     getCohort();
+    getStudents();
   }, []);
 
   return (
@@ -47,12 +92,21 @@ export const AppProvider = ({ children }) => {
         projects,
         setProjects,
         cohort,
+        setCohort,
         selectedClass,
         setSelectedClass,
         originalProjects,
         setOriginalProjects,
-        isAdmin,
-        setIsAdmin,
+        // isAdmin,
+        // setIsAdmin,
+        handleDelete,
+        isLoggedIn,
+        setIsLoggedIn,
+        students,
+        baseUrl,
+        toast,
+        loading,
+        setLoading,
       }}
     >
       {children}

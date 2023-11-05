@@ -1,39 +1,65 @@
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
+import { useContext } from "react";
+import AppContext from "../context/Appcontext";
 
 const AddProject = () => {
+  const { students, cohort, baseUrl, setProjects, projects, toast } =
+    useContext(AppContext);
+  const usr_id = localStorage.getItem("user_id");
+  // console.log(userId);
+  const onSubmit = async (values) => {
+    // e.preventDefault();
+    console.log(values);
+    try {
+      const response = await axios.post(`${baseUrl}/projects`, values);
+      console.log(response, "succesfully added new project");
+      toast.success("Project added succesfully", {
+        autoClose: 3000,
+        theme: "colored",
+      });
+      formik.resetForm();
+      setProjects([response.data, ...projects]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const formik = useFormik({
     initialValues: {
-      class: "",
-      projectType: "",
-      projectName: "",
-      projectDescription: "",
-      teamLeader: "",
-      members: [],
-      githubLink: "",
+      class_id: "",
+      project_type: "",
+      name: "",
+      description: "",
+      user_id: usr_id,
+      memebers: [],
+      // memebers: "",
+      github_link: "",
     },
     validationSchema: yup.object({
-      class: yup.string().required("Required"),
-      projectType: yup.string().required("Required"),
-      projectName: yup
+      class_id: yup.number().integer().required("Required"),
+      project_type: yup.string().required("Required"),
+      name: yup
         .string()
         .required("Required")
         .min(5, "Must be atleast 5 characters long")
         .max(30, "must be between 10 - 30 characters long"),
-      projectDescription: yup
+      description: yup
         .string()
         .required("Required")
         .min(5, "Must be 5 characters or more")
         .max(100, "Must be 10 - 100 characters"),
-      githubLink: yup.string().required("Required"),
-      teamLeader: yup.string().required("Required"),
-      members: yup.array(),
+      github_link: yup.string().required("Required"),
+      user_id: yup.number().required("Required"),
+      // user_id: userId,
+      memebers: yup.array().min(1, "At least one member must be selected"),
+      // memebers: yup.string().required("Required"),
     }),
+    onSubmit,
   });
   return (
-    <div className="min-h-screen bg-gray-300 flex justify-center items-center md:p-4">
-      <div className="bg-gray-700 sm:w-2/3 md:w-2/3 lg:w-2/3 xl:w-1/2 p-4 rounded-lg ">
+    <div className="min-h-screen bg-slate-100 flex justify-center items-center md:p-4 rounded-md">
+      <div className="bg-gray-700 sm:w-2/3 md:w-[25rem] lg:w-[30rem] p-4 rounded-lg ">
         <h1 className="text-3xl text-gray-300 font-bold text-center mb-8">
           PROJECT TRACKER
         </h1>
@@ -41,136 +67,154 @@ const AddProject = () => {
           <h1 className="text-black text-2xl font-bold text-center mb-4">
             Add Project
           </h1>
-          <form className="sm:p-3">
+          <form className="sm:p-3" onSubmit={formik.handleSubmit}>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
+              <label className="block  text-sm font-bold mb-2">
                 Select Class
               </label>
               <select
-                className="bg-blue-300 text-blue-800 p-2 rounded w-auto"
-                name="class"
-                value={formik.values.class}
+                className="p-2 rounded w-full"
+                name="class_id"
+                value={formik.values.class_id}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               >
-                <option value="class1">Cohort 1</option>
-                <option value="class2">Cohort 2</option>
+                <option defaultValue={"select"}>select</option>
+                {cohort.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
               </select>
-              {formik.errors.class && (
+              {formik.errors.class_id && (
                 <small className="text-red-500">
-                  {formik.touched.class && formik.errors.class}
+                  {formik.touched.class_id && formik.errors.class_id}
                 </small>
               )}
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
+              <label className="block text-sm font-bold mb-2">
                 Project Type
               </label>
               <select
-                className="bg-blue-300 text-blue-800 p-2 rounded w-auto"
-                name="projectType"
-                value={formik.values.projectType}
+                className="p-2 rounded w-full"
+                name="project_type"
+                value={formik.values.project_type}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               >
+                <option defaultValue="select">select</option>
                 <option value="Fullstack">Fullstack</option>
                 <option value="Android">Android</option>
               </select>
-              {formik.errors.projectType && (
+              {formik.errors.project_type && (
                 <small className="text-red-500">
-                  {formik.touched.projectType && formik.errors.projectType}
+                  {formik.touched.project_type && formik.errors.project_type}
                 </small>
               )}
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
+              <label className="block text-sm font-bold mb-2">
                 Project Name
               </label>
               <input
-                className="rounded bg-blue-300 border-2 border-gray-300 focus:outline-none focus:border-blue-500 text-gray-700 py-2 px-4 w-full"
+                className="rounded border-2 border-gray-300 focus:outline-none focus:border-blue-500  py-2 px-4 w-full"
                 type="text"
-                name="projectName"
-                value={formik.values.projectName}
+                name="name"
+                value={formik.values.name}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              {formik.errors.projectName && (
+              {formik.errors.name && (
                 <small className="text-red-500">
-                  {formik.touched.projectName && formik.errors.projectName}
+                  {formik.touched.name && formik.errors.name}
                 </small>
               )}
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
+              <label className="block text-sm font-bold mb-2">
                 Project Description
               </label>
               <textarea
-                className="rounded bg-blue-300 border-2 border-gray-300 focus:outline-none focus:border-blue-500 text-gray-700 py-2 px-4 w-full"
-                name="projectDescription"
-                value={formik.values.projectDescription}
+                className="rounded border-2 border-gray-300 focus:outline-none focus:border-blue-500  py-2 px-4 w-full"
+                name="description"
+                value={formik.values.description}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               ></textarea>
-              {formik.errors.projectDescription && (
+              {formik.errors.description && (
                 <small className="text-red-500">
-                  {formik.touched.projectDescription &&
-                    formik.errors.projectDescription}
+                  {formik.touched.description && formik.errors.description}
                 </small>
               )}
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
+              <label className="block text-sm font-bold mb-2">
                 Team Leader
               </label>
               <select
-                className="bg-blue-300 text-blue-800 p-2 rounded w-full"
-                name="teamLeader"
-                value={formik.values.teamLeader}
+                className="p-2 rounded w-full"
+                name="user_id"
+                value={formik.values.user_id}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               >
-                <option value="teamLeader1">Team Leader 1</option>
-                <option value="teamLeader2">Team Leader 2</option>
+                <option value="select">select</option>
+                {students.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.first_name}
+                  </option>
+                ))}
               </select>
-              {formik.errors.teamLeader && (
+              {formik.errors.user_id && (
                 <small className="text-red-500">
-                  {formik.touched.teamLeader && formik.errors.teamLeader}
+                  {formik.touched.user_id && formik.errors.user_id}
                 </small>
               )}
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
+              <label className="block text-sm font-bold mb-2">
                 Team Members
               </label>
-              <input
-                className="rounded bg-blue-300 border-2 border-gray-300 focus:outline-none focus:border-blue-500 text-gray-700 py-2 px-4 w-full"
-                type="text"
-                name="teamMembers"
-                value={formik.values.members}
+
+              <select
+                className="rounded border-2 border-gray-300 focus:outline-none focus:border-blue-500  py-2 px-4 w-full"
+                name="memebers"
+                value={formik.values.memebers}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-              />
-              {formik.errors.members && (
+                // defaultValue="select" // Set the default value here
+                multiple
+              >
+                <option value="select">select</option>{" "}
+                {students.map((item) => (
+                  <option key={item.id} value={item.first_name}>
+                    {item.first_name}
+                  </option>
+                ))}
+              </select>
+
+              {formik.errors.memebers && (
                 <small className="text-red-500">
-                  {formik.touched.members && formik.errors.members}
+                  {formik.touched.memebers && formik.errors.memebers}
                 </small>
               )}
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
+              <label className="block text-sm font-bold mb-2">
                 GitHub Link
               </label>
               <input
-                className="rounded bg-blue-300 border-2 border-gray-300 focus:outline-none focus:border-blue-500 text-gray-700 py-2 px-4 w-full"
+                className="rounded border-2 border-gray-300 focus:outline-none focus:border-blue-500  py-2 px-4 w-full"
                 type="text"
-                name="githubLink"
-                value={formik.values.githubLink}
+                name="github_link"
+                value={formik.values.github_link}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
               />
-              {formik.errors.githubLink && (
+              {formik.errors.github_link && (
                 <small className="text-red-500">
-                  {formik.touched.githubLink && formik.errors.githubLink}
+                  {formik.touched.github_link && formik.errors.github_link}
                 </small>
               )}
               <div className="mt-4">
