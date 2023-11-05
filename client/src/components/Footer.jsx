@@ -5,8 +5,11 @@ import {
   FaPinterest,
   FaSquareFacebook,
 } from "react-icons/fa6";
+import { useContext } from "react";
+import AppContext from "../context/Appcontext";
 
 function Footer() {
+  const { isLoggedIn } = useContext(AppContext);
   return (
     <footer
       className="mt-[2rem] text-[.95rem] mx-2 py-10 rounded-md flex flex-wrap flex-col
@@ -49,12 +52,14 @@ function Footer() {
             >
               Contacts
             </NavLink>
-            <NavLink
-              to={"/login"}
-              className="hover:bg-blue-500 hover:text-white text-black mx-3 p-2  rounded-lg"
-            >
-              Login
-            </NavLink>
+            {!isLoggedIn && (
+              <NavLink
+                to={"/login"}
+                className="hover:bg-blue-500 hover:text-white text-black mx-3 p-2  rounded-lg"
+              >
+                Login
+              </NavLink>
+            )}
           </ul>
         </li>
 
