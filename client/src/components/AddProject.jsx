@@ -186,7 +186,7 @@ const AddProject = () => {
                 // defaultValue="select" // Set the default value here
                 multiple
               >
-                <option value="select">select</option>{" "}
+                {/* <option value="select">select</option>{" "} */}
                 {students.map((item) => (
                   <option key={item.id} value={item.first_name}>
                     {item.first_name}

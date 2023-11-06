@@ -13,7 +13,7 @@ export const AppProvider = ({ children }) => {
   const [originalProjects, setOriginalProjects] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [loading, setLoading] = useState(null);
-  const baseUrl = "http://localhost:5555";
+  const baseUrl = "https://project-tracker-tvyu.onrender.com";
   // const [isAdmin, setIsAdmin] = useState(null);
   // "https://project-tracker-tvyu.onrender.com";
 
