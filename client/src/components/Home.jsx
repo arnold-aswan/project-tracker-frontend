@@ -8,11 +8,10 @@ function Home() {
     <div>
       <div className="mt-[5rem] mb-7">
         <h1 className="text-[3rem] text-center font-semibold">
-          The platform for smarter project management
+          The platform for smarter project tracking and management
         </h1>
         <p className="text-2xl text-center pt-5">
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Optio,
-          ullam.
+          Welcome to our Project Tracking and Management system where we provide you a platform that make it easier to track all projects done with various teams...
         </p>
       </div>
       <Lottie
