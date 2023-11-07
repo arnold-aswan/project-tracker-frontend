@@ -74,7 +74,7 @@ function Footer() {
                 type="email"
                 // onChange={(e) => setEmail(e.target.value)}
                 // value={email}
-                placeholder="Enter Email"
+                placeholder="Thank you"
                 // required
               />
               <button
@@ -85,7 +85,7 @@ function Footer() {
                  transition-all ease-in-out duration-300 basis-full mt-3
                  "
               >
-                Subscribe
+                <span className="text-blue-500">Reach</span> Us On
               </button>
             </form>
             <div className="flex gap-5 justify-center">
