@@ -1,9 +1,20 @@
 import Lottie from "lottie-react";
 import animationData from "../assets/proTracker.json";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import AppContext from "../context/Appcontext";
 
 function Home() {
+  const { isLoggedIn } = useContext(AppContext);
   const navigate = useNavigate();
+
+  const handleStart = () => {
+    if (isLoggedIn) {
+      navigate("/add-project");
+    } else {
+      navigate("/login");
+    }
+  };
   return (
     <div>
       <div className="mt-[5rem] mb-7">
@@ -11,7 +22,9 @@ function Home() {
           The platform for smarter project tracking and management
         </h1>
         <p className="text-2xl text-center pt-5">
-          Welcome to our Project Tracking and Management system where we provide you a platform that make it easier to track all projects done with various teams...
+          Welcome to our Project Tracking and Management system where we provide
+          you a platform that make it easier to track all projects done with
+          various teams...
         </p>
       </div>
       <Lottie
@@ -21,7 +34,7 @@ function Home() {
       <div className="w-fit mx-auto">
         <button
           className="bg-blue-500 text-white text-2xl py-3 px-5 rounded-full"
-          onClick={() => navigate("/add-project")}
+          onClick={handleStart}
         >
           Get Started &#10228;
         </button>
