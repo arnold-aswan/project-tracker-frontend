@@ -6,6 +6,7 @@ import AppContext from "../context/Appcontext";
 
 function Navbar() {
   const { isLoggedIn, setIsLoggedIn, toast } = useContext(AppContext);
+  console.log(isLoggedIn);
   const [sideBar, setSideBar] = useState(false);
   const navigate = useNavigate();
 
@@ -15,6 +16,7 @@ function Navbar() {
     localStorage.removeItem("role");
     localStorage.removeItem("user_id");
     setIsLoggedIn(false);
+    localStorage.removeItem("isLoggedIn");
     navigate("/");
   };
 
@@ -71,8 +73,8 @@ function Navbar() {
               ) : (
                 <li className="nav-links">
                   <NavLink to="/login">
-                    {localStorage.getItem("accessToken") ? "Logout" : "Login"}
-                    {/* Login */}
+                    {/* {localStorage.getItem("refreshToken") ? "Logout" : "Login"} */}
+                    Login
                   </NavLink>
                 </li>
               )}

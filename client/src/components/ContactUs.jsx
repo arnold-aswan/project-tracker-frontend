@@ -41,7 +41,7 @@ const ContactUs = () => {
         <div>
           <h2 className="text-xl font-bold mb-2">Contact Information</h2>
           <p className="text-gray-700">
-            <strong>Address:</strong> Lorem ipsum, dolor sit amet consectetur.
+            <strong>Address:</strong> Ngong Lane, Nairobi, Kenya.
             <br />
             <strong>Email:</strong> project.tracker@support.com
             <br />

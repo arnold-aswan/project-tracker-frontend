@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
-import AboutUs from "./components/AboutUs";
-import ContactUs from "./components/ContactUs";
+import AboutUs from "../src/components/AboutUs";
+import ContactUs from "../src/components/ContactUs";
 describe("AboutUs Component", () => {
   it("renders the component", () => {
     const { getByText } = render(<AboutUs />);

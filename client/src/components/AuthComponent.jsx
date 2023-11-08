@@ -31,6 +31,7 @@ function AuthComponent() {
       localStorage.setItem("role", response.data.role);
       localStorage.setItem("user_id", response.data.user_id);
       response.data.access_token ? setIsLoggedIn(true) : setIsLoggedIn(false);
+      localStorage.setItem("isLoggedIn", "true");
       navigate("/");
     } catch (error) {
       // console.log(email, password, role);

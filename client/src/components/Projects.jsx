@@ -34,7 +34,8 @@ export default function Projects() {
       setFilteredProjects(originalProjects);
     } else {
       const filtered = originalProjects.filter(
-        (item) => item.project_type === selected
+        (item) =>
+          item.project_type === selected && item.class_id === selectedClass
       );
       setFilteredProjects(filtered);
     }
