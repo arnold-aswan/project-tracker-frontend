@@ -11,7 +11,7 @@ export const AppProvider = ({ children }) => {
   const [students, setStudents] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
   const [originalProjects, setOriginalProjects] = useState([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("isLoggedIn") === "true");
   const [loading, setLoading] = useState(null);
   const baseUrl = "https://project-tracker-tvyu.onrender.com";
   // const [isAdmin, setIsAdmin] = useState(null);
