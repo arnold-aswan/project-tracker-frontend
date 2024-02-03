@@ -33,7 +33,7 @@ const AddProject = () => {
       description: "",
       user_id: usr_id,
       memebers: [],
-      // memebers: "",
+      
       github_link: "",
     },
     validationSchema: yup.object({
