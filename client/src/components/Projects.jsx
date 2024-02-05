@@ -1,19 +1,36 @@
 import { useContext, useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getProjects, deleteProject } from "../features/projects/project";
 import AppContext from "../context/Appcontext";
 import Project from "../components/Project";
 import { BsGridFill } from "react-icons/bs";
 import { FaTableList } from "react-icons/fa6";
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
+import error from "../assets/error.json";
+import Lottie from "lottie-react";
+import Table from "@mui/joy/Table";
 
 export default function Projects() {
-  const { projects, selectedClass, handleDelete, loading } =
-    useContext(AppContext);
-  const [view, setView] = useState("grid");
-  // console.log(projects);
+  // Get projects from the store
+  const projects = useSelector((state) => state.projects);
+  const dispatch = useDispatch();
 
-  const originalProjects = projects;
+  // pull the project properties
+  const { loading, error, projectItems } = projects;
+
+  const { selectedClass } = useContext(AppContext);
+  const originalProjects = projectItems;
+  // console.log(projectItems);
+
+  const [view, setView] = useState("grid");
   const [filteredProjects, setFilteredProjects] = useState(originalProjects);
   const [projectType, setProjectType] = useState("All");
+
+  useEffect(() => {
+    if (loading === "idle") {
+      dispatch(getProjects());
+    }
+  }, [loading, dispatch]);
 
   useEffect(() => {
     if (selectedClass) {
@@ -41,9 +58,25 @@ export default function Projects() {
     }
   };
 
+  const handleProjectDelete = (id) => {
+    console.log(id);
+    dispatch(deleteProject(id)).catch((error) => {
+      console.error("Delete project failed:", error);
+    });
+  };
+
   return (
     <>
-      {loading && (
+      {projectItems ? (
+        <h1 className="text-center text-2xl font-semibold mb-3 mt-16">
+          Projects
+        </h1>
+      ) : (
+        <p className="text-center text-xl font-semi-bold">
+          No available projects for this cohort
+        </p>
+      )}
+      {loading === "loading" ? (
         <div className="max-w-[7rem] mx-auto">
           <ClimbingBoxLoader
             color={"#000000"}
@@ -53,16 +86,13 @@ export default function Projects() {
             data-testid="loader"
           />
         </div>
-      )}
-      {projects ? (
-        <h1 className="text-center text-2xl font-semibold mb-3 mt-5">
-          Projects
-        </h1>
       ) : (
-        <p className="text-center text-xl font-semi-bold">
-          No available projects for this cohort
-        </p>
+        loading === "rejected" ||
+        (error && (
+          <Lottie animationData={error} className="max-w-[7rem] mx-auto" />
+        ))
       )}
+
       <div className="flex gap-2 bg-slate-600 px-3 md:p-3 w-fit rounded-full">
         <BsGridFill
           className={`h-[2rem] w-[1rem] md:w-[3rem] cursor-pointer ${
@@ -82,8 +112,7 @@ export default function Projects() {
         <select
           className="my-2 rounded-md"
           value={projectType}
-          onChange={handleFilter}
-        >
+          onChange={handleFilter}>
           <option value="All">All</option>
           <option value="Android">Android</option>
           <option value="Fullstack">Fullstack</option>
@@ -92,7 +121,7 @@ export default function Projects() {
 
       {view === "grid" ? (
         <div className="flex flex-wrap gap-2 md:items-center md:justify-center">
-          {filteredProjects.map((item) => (
+          {filteredProjects?.map((item) => (
             <Project
               key={item.id}
               id={item.id}
@@ -101,7 +130,7 @@ export default function Projects() {
               members={item.members}
               git={item.github_link}
               classId={item.class_id}
-              deleted={handleDelete}
+              deleted={handleProjectDelete}
               stack={item.project_type}
               // isAdmin={isAdmin}
               user={item.user && item.user.first_name}
@@ -139,8 +168,7 @@ export default function Projects() {
                     {localStorage.getItem("role") === "admin" && (
                       <button
                         className="bg-red-400 text-white rounded-full px-3 cursor:pointer"
-                        onClick={() => handleDelete(item.id)}
-                      >
+                        onClick={() => handleDelete(item.id)}>
                         Delete
                       </button>
                     )}
