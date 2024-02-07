@@ -1,5 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const baseUrl = "https://project-tracker-tvyu.onrender.com";
 
@@ -7,7 +9,6 @@ const initialState = {
   projectItems: [],
   loading: "idle",
   error: null,
-  // | "pending" | "succeeded" | "failed",
 };
 
 // Get all Projects from the backend
@@ -19,10 +20,9 @@ export const getProjects = createAsyncThunk(
   async (_, thunkApi) => {
     try {
       const res = await axios.get(`${baseUrl}/projects`);
-      console.log(res.data);
+      // console.log(res.data);
       return res.data;
     } catch (error) {
-      console.log(error, "something went wrong");
       return thunkApi.rejectWithValue({ error: error.message });
     }
   }
@@ -36,17 +36,42 @@ export const deleteProject = createAsyncThunk(
   async (id, thunkApi) => {
     try {
       await axios.delete(`${baseUrl}/project/${id}`);
-      console.log("successfully deleted project");
+      toast.success("Project deleted successfully", {
+        autoClose: 3000,
+        theme: "colored",
+      });
       return id;
     } catch (error) {
-      console.log("Error deleting project", error);
-
+      toast.error(error.message, {
+        autoClose: 3000,
+        theme: "colored",
+      });
       return thunkApi.rejectWithValue({ error: error.message });
     }
   }
 );
 
-export const projectSlice = createSlice({
+export const addProject = createAsyncThunk(
+  "projects/addProject",
+  async (projectDetails, thunkApi) => {
+    try {
+      const res = await axios.post(`${baseUrl}/projects`, projectDetails);
+      toast.success("Project added successfully", {
+        autoClose: 3000,
+        theme: "colored",
+      });
+      return res.data;
+    } catch (error) {
+      toast.error(error.message, {
+        autoClose: 3000,
+        theme: "colored",
+      });
+      return thunkApi.rejectWithValue({ error: error.message });
+    }
+  }
+);
+
+const projectSlice = createSlice({
   name: "projects",
   initialState,
   reducers: {},
@@ -59,22 +84,23 @@ export const projectSlice = createSlice({
     builder.addCase(getProjects.fulfilled, (state, action) => {
       // When data is fetched successfully
       state.loading = "successful";
-      console.log(action);
       state.projectItems = action.payload;
     });
 
     builder.addCase(getProjects.rejected, (state, action) => {
       //  When data is fetched unsuccessfully
       state.loading = "failed";
-      console.log(action);
       state.error = action.error;
     });
 
     builder.addCase(deleteProject.fulfilled, (state, action) => {
-      console.log(action);
       state.projectItems = state.projectItems.filter(
         (project) => project.id !== action.payload
       );
+    });
+
+    builder.addCase(addProject.fulfilled, (state, { payload }) => {
+      state.projectItems = [...state.projectItems, payload];
     });
   },
 });

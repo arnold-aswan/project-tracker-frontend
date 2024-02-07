@@ -1,30 +1,31 @@
 import { useFormik } from "formik";
 import * as yup from "yup";
-import axios from "axios";
-import { useContext } from "react";
-import AppContext from "../context/Appcontext";
+import { useSelector, useDispatch } from "react-redux";
+
+import { addProject } from "../features/projects/project";
+
 
 const AddProject = () => {
-  const { students, cohort, baseUrl, setProjects, projects, toast } =
-    useContext(AppContext);
+  const cohortItems = useSelector((state) => state.cohorts);
+  const users = useSelector((state) => state.users);
+
+  const dispatch = useDispatch();
+
+  const { classes } = cohortItems;
+  const { students } = users;
+
+  // const { students } = useContext(AppContext);
   const usr_id = localStorage.getItem("user_id");
-  // console.log(userId);
+
   const onSubmit = async (values) => {
-    // e.preventDefault();
-    console.log(values);
     try {
-      const response = await axios.post(`${baseUrl}/projects`, values);
-      console.log(response, "succesfully added new project");
-      toast.success("Project added succesfully", {
-        autoClose: 3000,
-        theme: "colored",
-      });
+      dispatch(addProject(values));
       formik.resetForm();
-      setProjects([response.data, ...projects]);
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
   };
+
   const formik = useFormik({
     initialValues: {
       class_id: "",
@@ -33,7 +34,7 @@ const AddProject = () => {
       description: "",
       user_id: usr_id,
       memebers: [],
-      
+
       github_link: "",
     },
     validationSchema: yup.object({
@@ -57,6 +58,7 @@ const AddProject = () => {
     }),
     onSubmit,
   });
+
   return (
     <div className="min-h-screen bg-slate-100 flex justify-center items-center md:p-4 rounded-md">
       <div className="bg-gray-700 sm:w-2/3 md:w-[25rem] lg:w-[30rem] p-4 rounded-lg ">
@@ -77,10 +79,9 @@ const AddProject = () => {
                 name="class_id"
                 value={formik.values.class_id}
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              >
+                onBlur={formik.handleBlur}>
                 <option defaultValue={"select"}>select</option>
-                {cohort.map((item) => (
+                {classes?.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.name}
                   </option>
@@ -101,8 +102,7 @@ const AddProject = () => {
                 name="project_type"
                 value={formik.values.project_type}
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              >
+                onBlur={formik.handleBlur}>
                 <option defaultValue="select">select</option>
                 <option value="Fullstack">Fullstack</option>
                 <option value="Android">Android</option>
@@ -140,8 +140,7 @@ const AddProject = () => {
                 name="description"
                 value={formik.values.description}
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              ></textarea>
+                onBlur={formik.handleBlur}></textarea>
               {formik.errors.description && (
                 <small className="text-red-500">
                   {formik.touched.description && formik.errors.description}
@@ -157,8 +156,7 @@ const AddProject = () => {
                 name="user_id"
                 value={formik.values.user_id}
                 onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              >
+                onBlur={formik.handleBlur}>
                 <option value="select">select</option>
                 {students.map((item) => (
                   <option key={item.id} value={item.id}>
@@ -183,10 +181,7 @@ const AddProject = () => {
                 value={formik.values.memebers}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                // defaultValue="select" // Set the default value here
-                multiple
-              >
-                {/* <option value="select">select</option>{" "} */}
+                multiple>
                 {students.map((item) => (
                   <option key={item.id} value={item.first_name}>
                     {item.first_name}
@@ -220,8 +215,7 @@ const AddProject = () => {
               <div className="mt-4">
                 <button
                   className="bg-blue-500 text-white py-2 px-16 rounded mx-auto block w-full hover:bg-blue-600"
-                  type="submit"
-                >
+                  type="submit">
                   Submit
                 </button>
               </div>

@@ -1,11 +1,12 @@
+import { useSelector } from "react-redux";
 import Lottie from "lottie-react";
 import animationData from "../assets/proTracker.json";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import AppContext from "../context/Appcontext";
 
 function Home() {
-  const { isLoggedIn } = useContext(AppContext);
+  const user = useSelector((state) => state.users);
+
+  const { isLoggedIn } = user;
   const navigate = useNavigate();
 
   const handleStart = () => {
@@ -34,8 +35,7 @@ function Home() {
       <div className="w-fit mx-auto">
         <button
           className="bg-blue-500 text-white text-2xl py-3 px-5 rounded-full"
-          onClick={handleStart}
-        >
+          onClick={handleStart}>
           Get Started &#10228;
         </button>
       </div>

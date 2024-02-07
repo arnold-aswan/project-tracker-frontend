@@ -1,21 +1,26 @@
+import { useSelector, useDispatch } from "react-redux";
+import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { RxHamburgerMenu, RxCrossCircled } from "react-icons/rx";
-import { useState, useContext } from "react";
+
+import { logout } from "../features/users/users";
 import project from "../assets/project-management.png";
-import AppContext from "../context/Appcontext";
 
 function Navbar() {
-  const { isLoggedIn, setIsLoggedIn, toast } = useContext(AppContext);
-  console.log(isLoggedIn);
   const [sideBar, setSideBar] = useState(false);
+
+  const user = useSelector((state) => state.users);
+  const dispatch = useDispatch();
+  const { isLoggedIn, toast } = user;
+
   const navigate = useNavigate();
 
   const handleLogout = () => {
+    dispatch(logout());
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("role");
     localStorage.removeItem("user_id");
-    setIsLoggedIn(false);
     localStorage.removeItem("isLoggedIn");
     navigate("/");
   };
@@ -41,8 +46,7 @@ function Navbar() {
     <>
       <nav
         className="border-2 border-slate-100 py-3 px-4 
-      rounded-md shadow-lg flex items-center justify-between mb-10"
-      >
+      rounded-md shadow-lg flex items-center justify-between mb-10">
         <NavLink to="/" className="cursor-pointer">
           <img src={project} alt="" className="w-[2rem]" />
         </NavLink>
@@ -58,8 +62,7 @@ function Navbar() {
                 sideBar
                   ? `lg:flex lg:gap-5 flex flex-col h-screen w-[15rem] fixed top-0 right-0 z-10 bg-white shadow-lg px-5 pt-[4rem]`
                   : "hidden lg:flex lg:gap-3"
-              }
-            >
+              }>
               <li>
                 <RxCrossCircled
                   className="text-2xl text-red-600 absolute top-8 left-[1rem] cursor-pointer z-30 lg:hidden"
@@ -83,8 +86,7 @@ function Navbar() {
                   to="/add-project"
                   onClick={(e) =>
                     handleClick(e, "/add-project", ["admin", "student"])
-                  }
-                >
+                  }>
                   Add Project
                 </NavLink>
               </li>
@@ -92,8 +94,7 @@ function Navbar() {
                 <li className="nav-links">
                   <NavLink
                     to="/add-cohort"
-                    onClick={(e) => handleClick(e, "/add-cohort", "admin")}
-                  >
+                    onClick={(e) => handleClick(e, "/add-cohort", "admin")}>
                     Add Cohorts
                   </NavLink>
                 </li>
@@ -103,8 +104,7 @@ function Navbar() {
                   to="/cohorts"
                   onClick={(e) =>
                     handleClick(e, "/cohorts", ["admin", "student"])
-                  }
-                >
+                  }>
                   Projects/Cohorts
                 </NavLink>
               </li>

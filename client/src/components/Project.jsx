@@ -31,15 +31,13 @@ export default function Project({
           <button
             className={`
             bg-blue-500 text-white rounded-full px-3 cursor-pointer`}
-            onClick={() => setOpen(true)}
-          >
+            onClick={() => setOpen(true)}>
             view
           </button>
           {localStorage.getItem("role") === "admin" ? (
             <button
               className="bg-red-400 text-white rounded-full px-3 cursor:pointer"
-              onClick={() => deleted(id)}
-            >
+              onClick={() => deleted(id)}>
               Delete
             </button>
           ) : null}
@@ -53,8 +51,7 @@ export default function Project({
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-          }}
-        >
+          }}>
           <Sheet
             variant="outlined"
             sx={{
@@ -62,8 +59,7 @@ export default function Project({
               borderRadius: "md",
               p: 3,
               boxShadow: "lg",
-            }}
-          >
+            }}>
             <ModalClose variant="plain" sx={{ m: 1 }} />
             <Typography
               component="h2"
@@ -71,8 +67,7 @@ export default function Project({
               level="h6"
               textColor="inherit"
               fontWeight="lg"
-              mb={1}
-            >
+              mb={1}>
               {/* This is the modal title */}
               Project Name: {name}
             </Typography>

@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import {
   FaInstagram,
@@ -5,16 +6,15 @@ import {
   FaPinterest,
   FaSquareFacebook,
 } from "react-icons/fa6";
-import { useContext } from "react";
-import AppContext from "../context/Appcontext";
 
 function Footer() {
-  const { isLoggedIn } = useContext(AppContext);
+  const user = useSelector((state) => state.users);
+  const { isLoggedIn } = user;
+
   return (
     <footer
       className="mt-[2rem] text-[.95rem] mx-2 py-10 rounded-md flex flex-wrap flex-col
-    "
-    >
+    ">
       <ul className="flex items-start justify-around flex-wrap flex-col-1 pb-5">
         <li className="footer-li items-center text-center md:text-start">
           <span className="foot-head">
@@ -36,27 +36,23 @@ function Footer() {
           <ul className=" flex flex-wrap flex-col pt-3 items-center basis-full">
             <NavLink
               to={"/"}
-              className="hover:bg-blue-500 hover:text-white text-black mx-3 p-2  rounded-lg"
-            >
+              className="hover:bg-blue-500 hover:text-white text-black mx-3 p-2  rounded-lg">
               Home
             </NavLink>
             <NavLink
               to={"/about"}
-              className="hover:bg-blue-500 hover:text-white text-black mx-3 p-2  rounded-lg"
-            >
+              className="hover:bg-blue-500 hover:text-white text-black mx-3 p-2  rounded-lg">
               About
             </NavLink>
             <NavLink
               to={"/contact"}
-              className="hover:bg-blue-500 hover:text-white text-black mx-3 p-2  rounded-lg"
-            >
+              className="hover:bg-blue-500 hover:text-white text-black mx-3 p-2  rounded-lg">
               Contacts
             </NavLink>
             {!isLoggedIn && (
               <NavLink
                 to={"/login"}
-                className="hover:bg-blue-500 hover:text-white text-black mx-3 p-2  rounded-lg"
-              >
+                className="hover:bg-blue-500 hover:text-white text-black mx-3 p-2  rounded-lg">
                 Login
               </NavLink>
             )}
@@ -67,8 +63,7 @@ function Footer() {
           <div className="md:w-[22rem] ">
             <form
               //   onSubmit={handleSubmit}
-              className="flex flex-wrap  items-center gap-2 py-3"
-            >
+              className="flex flex-wrap  items-center gap-2 py-3">
               <input
                 className="border-b-2 border-black py-1 outline-none basis-full "
                 type="email"
@@ -83,8 +78,7 @@ function Footer() {
                 bg-black text-white font-medium
                  hover:bg-white hover:text-black 
                  transition-all ease-in-out duration-300 basis-full mt-3
-                 "
-              >
+                 ">
                 <span className="text-blue-500">Reach</span> Us On
               </button>
             </form>

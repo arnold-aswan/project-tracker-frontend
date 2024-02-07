@@ -1,12 +1,14 @@
-import axios from "axios";
-import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import { signUp, login } from "../features/users/users";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import AppContext from "../context/Appcontext";
+
+import { useDispatch } from "react-redux";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function AuthComponent() {
-  const { baseUrl, setIsLoggedIn, toast } = useContext(AppContext);
+  const dispatch = useDispatch();
   const [isLoginForm, setIsLoginForm] = useState(true);
   const navigate = useNavigate();
 
@@ -14,53 +16,28 @@ function AuthComponent() {
     setIsLoginForm(!isLoginForm);
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    console.log(formikLogin.values);
-
+  const handleLogin = async () => {
     try {
-      const response = await axios.post(`${baseUrl}/login`, formikLogin.values);
-      // console.log(email, password, role);
-      console.log(response);
-      localStorage.setItem("accessToken", response.data.access_token);
-      localStorage.setItem("refreshToken", response.data.refresh_token);
-      localStorage.setItem("role", response.data.role);
-      localStorage.setItem("user_id", response.data.user_id);
-      response.data.access_token ? setIsLoggedIn(true) : setIsLoggedIn(false);
-      localStorage.setItem("isLoggedIn", "true");
-      navigate("/");
+      dispatch(login(formikLogin.values)).then((action) => {
+        const payload = action.payload;
+        if (payload.access_token) {
+          navigate("/");
+        }
+      });
     } catch (error) {
-      console.error("Error logging in:", error);
-      if (error) {
-        toast.error(error.response.data.message, {
-          autoclose: 3000,
-          theme: "colored",
-        });
-      }
+      throw new Error(error.message);
     }
   };
 
   const handleRegistration = async (event) => {
     event.preventDefault();
-    console.log(formikSignup.values);
-
     try {
-      const response = await axios.post(
-        `${baseUrl}/signUp`,
-        formikSignup.values
-      );
-      console.log(response);
-
+      dispatch(signUp(formikSignup.values));
       setIsLoginForm(true);
-      formikSignup.values = formikSignup.initialValues;
+      formikSignup.resetForm();
     } catch (error) {
       console.error("Error registering:", error);
-      if (error) {
-        toast.error(error.response.data.message, {
-          autoclose: 3000,
-          theme: "colored",
-        });
-      }
+      throw new Error(error.message);
     }
   };
 

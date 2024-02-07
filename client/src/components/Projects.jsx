@@ -1,8 +1,8 @@
-import { useContext, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getProjects, deleteProject } from "../features/projects/project";
-import AppContext from "../context/Appcontext";
-import Project from "../components/Project";
+import { deleteProject } from "../features/projects/project";
+
+import Project from "./Project";
 import { BsGridFill } from "react-icons/bs";
 import { FaTableList } from "react-icons/fa6";
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
@@ -11,6 +11,9 @@ import Lottie from "lottie-react";
 import Table from "@mui/joy/Table";
 
 export default function Projects() {
+  const cohortItems = useSelector((state) => state.cohorts);
+  const { selectedClass } = cohortItems;
+
   // Get projects from the store
   const projects = useSelector((state) => state.projects);
   const dispatch = useDispatch();
@@ -18,19 +21,11 @@ export default function Projects() {
   // pull the project properties
   const { loading, error, projectItems } = projects;
 
-  const { selectedClass } = useContext(AppContext);
   const originalProjects = projectItems;
-  // console.log(projectItems);
 
   const [view, setView] = useState("grid");
   const [filteredProjects, setFilteredProjects] = useState(originalProjects);
   const [projectType, setProjectType] = useState("All");
-
-  useEffect(() => {
-    if (loading === "idle") {
-      dispatch(getProjects());
-    }
-  }, [loading, dispatch]);
 
   useEffect(() => {
     if (selectedClass) {
@@ -59,7 +54,7 @@ export default function Projects() {
   };
 
   const handleProjectDelete = (id) => {
-    console.log(id);
+    
     dispatch(deleteProject(id)).catch((error) => {
       console.error("Delete project failed:", error);
     });
@@ -121,19 +116,19 @@ export default function Projects() {
 
       {view === "grid" ? (
         <div className="flex flex-wrap gap-2 md:items-center md:justify-center">
-          {filteredProjects?.map((item) => (
+          {filteredProjects?.map((project) => (
             <Project
-              key={item.id}
-              id={item.id}
-              name={item.name}
-              desc={item.description}
-              members={item.members}
-              git={item.github_link}
-              classId={item.class_id}
+              key={project.id}
+              id={project.id}
+              name={project.name}
+              desc={project.description}
+              members={project.members}
+              git={project.github_link}
+              classId={project.class_id}
               deleted={handleProjectDelete}
-              stack={item.project_type}
+              stack={project.project_type}
               // isAdmin={isAdmin}
-              user={item.user && item.user.first_name}
+              user={project.user && project.user.first_name}
             />
           ))}
         </div>
@@ -168,7 +163,7 @@ export default function Projects() {
                     {localStorage.getItem("role") === "admin" && (
                       <button
                         className="bg-red-400 text-white rounded-full px-3 cursor:pointer"
-                        onClick={() => handleDelete(item.id)}>
+                        onClick={() => handleProjectDelete(item.id)}>
                         Delete
                       </button>
                     )}
