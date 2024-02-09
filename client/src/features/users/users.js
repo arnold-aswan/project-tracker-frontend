@@ -8,6 +8,7 @@ const initialState = {
   students: [],
   isLoggedIn: localStorage.getItem("isLoggedIn") === "true",
   loading: "idle",
+  loginStatus: "idle",
   error: null,
 };
 
@@ -31,6 +32,7 @@ export const signUp = createAsyncThunk(
   async (userDetails, thunkApi) => {
     try {
       const res = await axios.post(`${baseUrl}/signUp`, userDetails);
+      console.log(res.data);
       return res.data;
     } catch (error) {
       console.error("Error registering:", error);
@@ -38,6 +40,7 @@ export const signUp = createAsyncThunk(
         autoclose: 3000,
         theme: "colored",
       });
+      console.log(error);
       return thunkApi.rejectWithValue({ error: error.message });
     }
   }
@@ -55,12 +58,14 @@ export const login = createAsyncThunk(
       localStorage.setItem("user_id", response.data.user_id);
       localStorage.setItem("isLoggedIn", "true");
 
+      console.log(response.data);
       return response.data;
     } catch (error) {
       toast.error(error.response.data.message, {
         autoclose: 3000,
         theme: "colored",
       });
+      console.log(error);
       return thunkApi.rejectWithValue({ error: error.message });
     }
   }
@@ -90,6 +95,10 @@ const userSlice = createSlice({
     });
 
     builder.addCase(signUp.fulfilled, () => {});
+
+    builder.addCase(login.pending, (state) => {
+      state.loginStatus = "loading";
+    });
     builder.addCase(login.fulfilled, (state, { payload }) => {
       console.log(payload);
 

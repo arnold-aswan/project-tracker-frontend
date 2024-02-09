@@ -1,14 +1,18 @@
-
-import { signUp, login } from "../features/users/users";
-import { useFormik } from "formik";
-import * as yup from "yup";
-
-import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import CircularProgress from "@mui/joy/CircularProgress";
+
+import { useDispatch, useSelector } from "react-redux";
+import { signUp, login } from "../features/users/users";
 
 function AuthComponent() {
+  const user = useSelector((state) => state.users);
   const dispatch = useDispatch();
+
+  const { loginStatus } = user;
+
   const [isLoginForm, setIsLoginForm] = useState(true);
   const navigate = useNavigate();
 
@@ -157,7 +161,16 @@ function AuthComponent() {
             <button
               className="bg-blue-600 text-white rounded-md py-2 px-4 text-lg font-semibold mt-4 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
               type="submit">
-              Login
+              {loginStatus === "loading" ? (
+                <CircularProgress
+                  color="neutral"
+                  size="sm"
+                  value={26}
+                  variant="solid"
+                />
+              ) : (
+                "Login"
+              )}
             </button>
           </form>
         ) : (
