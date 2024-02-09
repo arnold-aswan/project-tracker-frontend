@@ -4,9 +4,8 @@ function CohortCard({ title, classId, viewProjects }) {
       <div className="flex flex-col gap-5 items-center">
         <h3 className="text-xl font-medium">{title}</h3>
         <button
-          className="bg-blue-500 text-white px-3 py-2 rounded-full cursor-pointer mt-4"
-          onClick={() => viewProjects(classId)}
-        >
+          className="bg-blue-500 text-white px-3 py-2 rounded-md cursor-pointer mt-4"
+          onClick={() => viewProjects(classId)}>
           view projects
         </button>
       </div>
