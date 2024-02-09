@@ -32,7 +32,7 @@ export const signUp = createAsyncThunk(
   async (userDetails, thunkApi) => {
     try {
       const res = await axios.post(`${baseUrl}/signUp`, userDetails);
-      console.log(res.data);
+
       return res.data;
     } catch (error) {
       console.error("Error registering:", error);
@@ -58,7 +58,6 @@ export const login = createAsyncThunk(
       localStorage.setItem("user_id", response.data.user_id);
       localStorage.setItem("isLoggedIn", "true");
 
-      console.log(response.data);
       return response.data;
     } catch (error) {
       toast.error(error.response.data.message, {
@@ -100,8 +99,7 @@ const userSlice = createSlice({
       state.loginStatus = "loading";
     });
     builder.addCase(login.fulfilled, (state, { payload }) => {
-      console.log(payload);
-
+      state.loginStatus = "successful";
       payload.access_token
         ? (state.isLoggedIn = true)
         : (state.isLoggedIn = false);
