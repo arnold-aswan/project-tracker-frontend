@@ -2,13 +2,22 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteProject } from "../features/projects/project";
 
-import Project from "./Project";
-import { BsGridFill } from "react-icons/bs";
-import { FaTableList } from "react-icons/fa6";
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import error from "../assets/error.json";
 import Lottie from "lottie-react";
-import Table from "@mui/joy/Table";
+import {
+  Table,
+  TableHead,
+  TableHeaderCell,
+  TableBody,
+  TableRow,
+  TableCell,
+  Badge,
+  Text,
+  Card,
+  Title,
+} from "@tremor/react";
+import ModalBox from "./Modal";
 
 export default function Projects() {
   const cohortItems = useSelector((state) => state.cohorts);
@@ -23,9 +32,20 @@ export default function Projects() {
 
   const originalProjects = projectItems;
 
-  const [view, setView] = useState("grid");
+  // const [view, setView] = useState("grid");
   const [filteredProjects, setFilteredProjects] = useState(originalProjects);
   const [projectType, setProjectType] = useState("All");
+  const [open, setOpen] = useState(false);
+  const [openModalItem, setOpenModalItem] = useState({});
+
+  const mod = (items) => {
+    setOpen(true);
+    setOpenModalItem(items);
+    // console.log(items);
+    return openModalItem;
+  };
+
+  const random = ["Pending", "Completed"];
 
   useEffect(() => {
     if (selectedClass) {
@@ -54,10 +74,10 @@ export default function Projects() {
   };
 
   const handleProjectDelete = (id) => {
-    
     dispatch(deleteProject(id)).catch((error) => {
       console.error("Delete project failed:", error);
     });
+    setOpen(!open);
   };
 
   return (
@@ -88,20 +108,6 @@ export default function Projects() {
         ))
       )}
 
-      <div className="flex gap-2 bg-slate-600 px-3 md:p-3 w-fit rounded-full">
-        <BsGridFill
-          className={`h-[2rem] w-[1rem] md:w-[3rem] cursor-pointer ${
-            view === "grid" ? "text-white" : "text-gray-400"
-          }`}
-          onClick={() => setView("grid")}
-        />
-        <FaTableList
-          className={`h-[2rem] w-[1rem] md:w-[3rem] cursor-pointer ${
-            view === "table" ? "text-white" : "text-gray-400"
-          }`}
-          onClick={() => setView("table")}
-        />
-      </div>
       <div className="my-3">
         <p>Filter by project Type:</p>
         <select
@@ -114,66 +120,72 @@ export default function Projects() {
         </select>
       </div>
 
-      {view === "grid" ? (
-        <div className="flex flex-wrap gap-2 md:items-center md:justify-center">
-          {filteredProjects?.map((project) => (
-            <Project
-              key={project.id}
-              id={project.id}
-              name={project.name}
-              desc={project.description}
-              members={project.members}
-              git={project.github_link}
-              classId={project.class_id}
-              deleted={handleProjectDelete}
-              stack={project.project_type}
-              // isAdmin={isAdmin}
-              user={project.user && project.user.first_name}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="overflow-auto">
-          <table className="table-auto text-sm w-full text-left text-gray-500 dark:text-gray-400">
-            <thead className="text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th className="th-td">ID</th>
-                <th className="th-td">Name</th>
-                <th className="th-td">Description</th>
-                <th className="th-td">Github</th>
-                <th className="th-td">Owner</th>
-                <th className="th-td">Members</th>
-                <th className="th-td">Project Type</th>
-                {localStorage.getItem("role") === "admin" && (
-                  <th className="th-td">Action</th>
-                )}
-              </tr>
-            </thead>
-            <tbody>
+      <div className="overflow-auto border-2 rounded-xl">
+        <Card>
+          <Title>Projects List</Title>
+          <Table className="mt-4">
+            <TableHead>
+              <TableRow className="font-bold">
+                <TableHeaderCell>Name</TableHeaderCell>
+                <TableHeaderCell>Description</TableHeaderCell>
+                <TableHeaderCell>Project Type</TableHeaderCell>
+                <TableHeaderCell>Status</TableHeaderCell>
+                <TableHeaderCell>Action</TableHeaderCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
               {filteredProjects.map((item) => (
-                <tr key={item.id}>
-                  <td className="th-td">{item.id}</td>
-                  <td className="th-td">{item.name}</td>
-                  <td className="th-td">{item.description}</td>
-                  <td className="th-td">{item.github_link}</td>
-                  <td className="th-td">{item.user && item.user.first_name}</td>
-                  <td className="th-td">{item.members}</td>
-                  <td className="th-td">{item.project_type}</td>
-                  <td className="th-td">
-                    {localStorage.getItem("role") === "admin" && (
-                      <button
-                        className="bg-red-400 text-white rounded-full px-3 cursor:pointer"
-                        onClick={() => handleProjectDelete(item.id)}>
-                        Delete
-                      </button>
-                    )}
-                  </td>
-                </tr>
+                <TableRow key={item.id}>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>
+                    <Text>
+                      {item.description.slice(0, 50)}
+                      {item.description.length > 50 ? "..." : ""}
+                    </Text>
+                  </TableCell>
+
+                  <TableCell>
+                    <Badge
+                      className="font-semibold"
+                      color={
+                        item.project_type === "Android" ? "blue" : "purple"
+                      }>
+                      {item.project_type}
+                      {/* <Text>{item.project_type}</Text> */}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      className="font-semibold"
+                      color={
+                        random[Math.floor(Math.random() * random.length)] ===
+                        "Completed"
+                          ? "emerald"
+                          : "orange"
+                      }>
+                      {random[Math.floor(Math.random() * random.length)]}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <button
+                      size="md"
+                      onClick={() => mod(item)}
+                      className="text-white bg-blue-500 px-4 py-2 font-bold rounded-md">
+                      More
+                    </button>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+            </TableBody>
+            <ModalBox
+              setOpen={setOpen}
+              open={open}
+              item={openModalItem}
+              deleteProject={handleProjectDelete}
+            />
+          </Table>
+        </Card>
+      </div>
     </>
   );
 }
